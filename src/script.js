@@ -23,11 +23,11 @@ class Chat {
     async onMessage(nodes) {
         for (const node of nodes) {
             const data = messageComponents(node)
-            if (!data.textNodes.length) return
-            if (settings.ignoreNames.includes(data.senderName.toLowerCase())) return
-            if (settings.ignoreChannels.includes(data.senderChatName)) return
+            if (!data.textNodes.length) continue
+            if (settings.ignoreNames.includes(data.senderName.toLowerCase())) continue
+            if (settings.ignoreChannels.includes(data.senderChatName)) continue
             const words = data.content.textContent.toLowerCase().split(' ')
-            if (settings.ignoreWords.some(sub => words.includes(sub.toLowerCase()))) return
+            if (settings.ignoreWords.some(sub => words.includes(sub.toLowerCase()))) continue
 
             const translated = await translateAll(data, settings.language)
 
@@ -53,10 +53,12 @@ class Chat {
         }
     }
 
-    init() {
+    async init() {
         if (!settings.enabled) return
         this.element = document.getElementById("chat")
-        this.observer.observe(this.element, { childList: true })
+        const lastchild = this.element.lastChild
+        await this.onMessage(this.element.children)
+        lastchild === this.element.lastChild ? this.observer.observe(this.element, { childList: true }) : this.init()
     }
 
     disable() {
