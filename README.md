@@ -6,6 +6,7 @@
 
 If you are using tampermonkey/violentmonkey or any other userscript manager, use script.user.js else script.js.
 
-Supports any language select in Settings -> Chat.
+Supports any language select in Settings -> Chat.\
+Click on language prefix to switch between original and translated.
 
 Requires disabled CORS warnings if used without userscript manager.
