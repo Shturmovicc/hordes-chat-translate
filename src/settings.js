@@ -9,7 +9,7 @@ export default class Settings {
     init() {
         const storage = JSON.parse(localStorage.getItem('onex:translation-mode-settings'))
         for (const key in storage) {
-            if (typeof storage[key] === this[key]) {
+            if (typeof storage[key] === typeof this[key]) {
                 this[key] = storage[key]
             }
         }
@@ -27,23 +27,28 @@ export default class Settings {
 
 class SettingsElement {
     constructor(settings, chat) {
+        this.settings = settings
+        this.chat = chat
+    }
+
+    init() {
         this.enabled = newElement('div').css(['btn', 'checkbox'])
-        if (settings.enabled) this.enabled.classList.add('active')
+        if (this.settings.enabled) this.enabled.classList.add('active')
         this.enabled.addEventListener('click', () => {
             if (!this.enabled.classList.contains('active')) {
                 this.enabled.classList.add('active')
-                settings.set('enabled', true)
-                chat.init()
+                this.settings.set('enabled', true)
+                this.chat.init()
             } else {
                 this.enabled.classList.remove('active')
-                settings.set('enabled', false)
-                chat.disable()
+                this.settings.set('enabled', false)
+                this.chat.disable()
             }
         })
 
-        this.langinput = newElement('input', { type: 'text', value: settings.language, placeholder: 'en' })
+        this.langinput = newElement('input', { type: 'text', value: this.settings.language, placeholder: 'en' })
         this.langinput.addEventListener('focusout', () => {
-            settings.set('language', this.langinput.value)
+            this.settings.set('language', this.langinput.value)
         })
 
         this.node = [

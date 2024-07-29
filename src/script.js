@@ -79,6 +79,7 @@ const init = () => {
         setTimeout(init, 100)
     } else {
         settings.init()
+        settingsElement.init()
         ui.init()
         chat.init()
         const observer = new MutationObserver(ReloadObserver)
