@@ -8,8 +8,12 @@ async function translate(data, language = 'en') {
     url.search = `client=gtx&dt=t&dt=rm&dj=1&sl=auto&tl=${language}&q=${data.text}`
     const header = { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
 
-    const resp = await GM.xmlHttpRequest({ method: "GET", url, headers: header, responseType: 'json' })
-    const respJson = resp.response
+    let respJson
+    if (typeof GM !== 'undefined') {
+        respJson = await GM.xmlHttpRequest({ method: "GET", url, headers: header, responseType: 'json' }).then(res => res.response)
+    } else {
+        respJson = await fetch(url, { headers: header }).then(res => res.json())
+    }
 
     cache.set(language, data.text, respJson)
     return { ...data, content: respJson }
