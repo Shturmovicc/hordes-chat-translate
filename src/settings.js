@@ -4,6 +4,9 @@ export default class Settings {
     constructor() {
         this.enabled = true
         this.language = 'en'
+        this.ignoreNames = []
+        this.ignoreChannels = []
+        this.ignoreWords = []
     }
 
     init() {
@@ -51,13 +54,37 @@ class SettingsElement {
             this.settings.set('language', this.langinput.value)
         })
 
+        this.nicknameinput = newElement('input', { type: 'text', value: this.settings.ignoreNames.join(','), placeholder: 'Shturmovic, HorrorsOfWar...' })
+        this.nicknameinput.addEventListener('focusout', () => {
+            const val = this.nicknameinput.value.split(',').map(name => name.trim().toLowerCase())
+            this.settings.set('ignoreNames', val)
+        })
+
+        this.channelinput = newElement('input', { type: 'text', value: this.settings.ignoreChannels.join(','), placeholder: 'Party, clan...' })
+        this.channelinput.addEventListener('focusout', () => {
+            const val = this.channelinput.value.split(',').map(name => name.trim().toLowerCase())
+            this.settings.set('ignoreChannels', val)
+        })
+
+        this.wordinput = newElement('input', { type: 'text', value: this.settings.ignoreWords.join(','), placeholder: '...' })
+        this.wordinput.addEventListener('focusout', () => {
+            const val = this.wordinput.value.split(',').map(name => name.trim().toLowerCase())
+            this.settings.set('ignoreWords', val)
+        })
+
         this.node = [
             newElement('div').css(['textprimary']).text('Translation'),
             newElement('div'),
             newElement('div').text('Enabled'),
             this.enabled,
             newElement('div').text('Language Code').append(newElement('br'), newElement('small').css(['textgrey']).text('Must be valid language code')),
-            this.langinput
+            this.langinput,
+            newElement('div').text('Ignore Names').append(newElement('br'), newElement('small').css(['textgrey']).text('Nicknames to ignore')),
+            this.nicknameinput,
+            newElement('div').text('Ignore Channels').append(newElement('br'), newElement('small').css(['textgrey']).text('Chat channels to ignore')),
+            this.channelinput,
+            newElement('div').text('Ignore Words').append(newElement('br'), newElement('small').css(['textgrey']).text('Ignore messages with words')),
+            this.wordinput
         ]
     }
 }

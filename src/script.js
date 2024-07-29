@@ -24,6 +24,10 @@ class Chat {
         for (const node of nodes) {
             const data = messageComponents(node)
             if (!data.textNodes.length) return
+            if (settings.ignoreNames.includes(data.senderName.toLowerCase())) return
+            if (settings.ignoreChannels.includes(data.senderChatName)) return
+            const words = data.content.textContent.toLowerCase().split(' ')
+            if (settings.ignoreWords.some(sub => words.includes(sub.toLowerCase()))) return
 
             const translated = await translateAll(data, settings.language)
 
