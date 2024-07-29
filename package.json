@@ -5,7 +5,8 @@
   "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode=production && sh ./scripts/prepend-header.sh"
+    "build": "webpack && sh ./scripts/prepend-header.sh",
+    "watch": "webpack watch"
   },
   "repository": {
     "type": "git",
