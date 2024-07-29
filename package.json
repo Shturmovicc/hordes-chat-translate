@@ -1,0 +1,27 @@
+{
+  "name": "hordes-chat-translate",
+  "version": "0.1.0",
+  "description": "Auto chat translation mod for hordes.io",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=production && sh ./scripts/prepend-header.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shturmovicc/hordes-chat-translate.git"
+  },
+  "author": "Shturmovic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Shturmovicc/hordes-chat-translate/issues"
+  },
+  "homepage": "https://github.com/Shturmovicc/hordes-chat-translate#readme",
+  "devDependencies": {
+    "webpack": "^5.93.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@zip.js/zip.js": "^2.7.47"
+  }
+}

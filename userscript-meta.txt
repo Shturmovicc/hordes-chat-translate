@@ -1,0 +1,10 @@
+// ==UserScript==
+// @name        AutoChatTranslation
+// @match       *://hordes.io/play
+// @grant       GM.xmlHttpRequest
+// @connect     translate.google.com
+// @version     0.1
+// @author      Shturmovic
+// @description Automatically translates chat.
+// @run-at      document-start
+// ==/UserScript==
