@@ -7,6 +7,16 @@ const chat = new Chat()
 const settings = new Settings()
 
 chat.onmessage = (message) => {
+    message.oncontext = (menu) => {
+        const nameList = settings.get('excludeNames')
+        const name = menu.element.firstChild.textContent
+        menu.addChoice('[TL] Exclude', nameList.includes(name.toLowerCase()), () => {
+            nameList.push(name)
+            settings.element.nicknameinput.value = nameList.join()
+            settings.element.nicknameinput.dispatchEvent(new FocusEvent('focusout'))
+        })
+    }
+
     if (!message.textNodes.length) return
     if (settings.get('excludeNames').includes(message.nickname.toLowerCase())) return
     if (settings.get('excludeChannels').includes(message.channel)) return

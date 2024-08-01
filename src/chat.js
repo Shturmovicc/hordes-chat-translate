@@ -1,3 +1,4 @@
+import { getContextMenu } from "./context-menu"
 import translateAll from "./translate"
 import { ToggleTextButton } from "./utils/button"
 
@@ -17,6 +18,7 @@ class Message {
         this.channel = channel
         this.textNodes = textNodes
         this.elements = elements
+        this.elements.senderData?.addEventListener('contextmenu', () => this.oncontext(getContextMenu()))
     }
 
     async translate(language, excludeWords = []) {
@@ -35,7 +37,7 @@ class Message {
         }
     }
 
-    oncontext() { }
+    oncontext(menu) { }
 
     static from_article(article) {
         const line = article.lastChild
