@@ -1,4 +1,4 @@
-import Cache from "./cache"
+import Cache from "./utils/cache"
 
 async function translate(data, language = 'en') {
     const hit = cache.get(language, data.text)
@@ -19,10 +19,19 @@ async function translate(data, language = 'en') {
     return { ...data, content: respJson }
 }
 
-export default async function translateAll(data, language) {
+export default async function translateAll(textNodes, language, excludeWords = []) {
     const tasks = []
-    for (const text of data.textNodes) {
-        tasks.push(translate(text, language))
+    const placeholders = []
+    for (const text of textNodes) {
+        if (text.text.length) {
+            text.text = text.text.split(' ').map(word => {
+                for (const exclude of excludeWords) {
+                    if (word.toLowerCase() === exclude) { return `{{${placeholders.push(word)}}}` }
+                }
+                return word
+            }).join(' ')
+            tasks.push(translate(text, language))
+        }
     }
     const translated = await Promise.all(tasks)
 
@@ -30,7 +39,9 @@ export default async function translateAll(data, language) {
     const out = []
     for (const data of translated) {
         if (data.text !== data.content.sentences[0].trans && data.content.src !== language) {
-            out.push({ node: data.node, orig: data.node.nodeValue, trans: data.content.sentences[0].trans })
+            let trans = data.content.sentences[0].trans
+            placeholders.forEach((word, index) => trans = trans.replace(`{{${index + 1}}}`, word))
+            out.push({ node: data.node, orig: data.node.nodeValue, trans })
             languages.add(data.content.src)
         }
     }
