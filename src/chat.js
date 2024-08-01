@@ -18,7 +18,6 @@ class Message {
         this.channel = channel
         this.textNodes = textNodes
         this.elements = elements
-
         this.elements.senderData?.addEventListener('contextmenu', () => this.oncontext(getContextMenu()))
     }
 
