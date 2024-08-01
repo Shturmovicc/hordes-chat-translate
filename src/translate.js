@@ -5,7 +5,7 @@ async function translate(data, language = 'en') {
     if (hit) return { ...data, content: hit }
 
     const url = new URL("https://translate.google.com/translate_a/single")
-    url.search = `client=gtx&dt=t&dt=rm&dj=1&sl=auto&tl=${language}&q=${data.text}`
+    url.search = encodeURI(`client=gtx&dt=t&dt=rm&dj=1&sl=auto&tl=${language}&q=${data.text}`)
     const header = { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
 
     let respJson
