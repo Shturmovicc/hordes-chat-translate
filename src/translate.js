@@ -40,7 +40,7 @@ export default async function translateAll(textNodes, language, excludeWords = [
     for (const data of translated) {
         if (data.text !== data.content.sentences[0].trans && data.content.src !== language) {
             let trans = data.content.sentences[0].trans
-            placeholders.forEach((word, index) => trans = trans.replace(`{{${index + 1}}}`, word))
+            placeholders.forEach((word, index) => trans = trans.replace(RegExp(`\\{?\\{${index + 1}\\}\\}?`), word))
             out.push({ node: data.node, orig: data.node.nodeValue, trans })
             languages.add(data.content.src)
         }
