@@ -10,8 +10,14 @@ chat.onmessage = (message) => {
     message.oncontext = (menu) => {
         const nameList = settings.get('excludeNames')
         const name = menu.element.firstChild.textContent
-        menu.addChoice('[TL] Exclude', nameList.includes(name.toLowerCase()), () => {
-            nameList.push(name)
+
+        const exists = nameList.includes(name.toLowerCase())
+        const text = exists ? 'Include' : 'Exclude'
+
+        menu.addChoice(`[TL] ${text}`, false, () => {
+            if (!exists) nameList.push(name)
+            else nameList.splice(nameList.indexOf(name), 1)
+
             settings.element.nicknameinput.value = nameList.join()
             settings.element.nicknameinput.dispatchEvent(new FocusEvent('focusout'))
         })
