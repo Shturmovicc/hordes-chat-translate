@@ -1,6 +1,6 @@
 {
   "name": "hordes-chat-translate",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Auto chat translation mod for hordes.io",
   "main": "script.js",
   "scripts": {
