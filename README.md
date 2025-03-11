@@ -14,8 +14,8 @@
 
 ## Installation
 
-1. Download [violentmonkey](https://violentmonkey.github.io/), [tampermonkey](https://www.tampermonkey.net/) or any userscript manager.
-2. Download chat-translation.user.js from releases.
+1. Download [violentmonkey](https://violentmonkey.github.io/), [tampermonkey](https://www.tampermonkey.net/) or any other userscript manager.
+2. Download chat-translation.user.js from [releases](https://github.com/Shturmovicc/hordes-chat-translate/releases).
 3. Install it as userscript using manager.
 
 Requires disabled CORS warnings if used without userscript manager.
