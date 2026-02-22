@@ -9,9 +9,9 @@ const settings = new Settings()
 chat.onmessage = (message) => {
     message.oncontext = (menu) => {
         const nameList = settings.get('excludeNames')
-        const name = menu.element.firstChild.textContent
+        const name = menu.element.firstChild.textContent.toLowerCase()
 
-        const exists = nameList.includes(name.toLowerCase())
+        const exists = nameList.includes(name)
         const text = exists ? 'Include' : 'Exclude'
 
         menu.addChoice(`[TL] ${text}`, false, () => {

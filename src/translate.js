@@ -38,11 +38,19 @@ export default async function translateAll(textNodes, language, excludeWords = [
     const languages = new Set()
     const out = []
     for (const data of translated) {
-        if (data.text !== data.content.sentences[0].trans && data.content.src !== language) {
+        if (data.text.toLowerCase() !== data.content.sentences[0].trans.toLowerCase() && data.content.src !== language) {
             let trans = data.content.sentences[0].trans
-            placeholders.forEach((word, index) => trans = trans.replace(RegExp(`\\{?\\{${index + 1}\\}\\}?`), word))
-            out.push({ node: data.node, orig: data.node.nodeValue, trans })
-            languages.add(data.content.src)
+
+            placeholders.forEach((word, index) => {
+                const regex = RegExp(`\\{?\\{?\\{${index + 1}\\}\\}?\\}?`)
+                trans = trans.replace(regex, word)
+            })
+
+            const orig = data.node.nodeValue
+            if (orig.toLowerCase() !== trans.toLowerCase()) {
+                out.push({ node: data.node, orig, trans })
+                languages.add(data.content.src)
+            }
         }
     }
     return { langs: [...languages], data: out }
