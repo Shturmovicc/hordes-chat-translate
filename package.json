@@ -21,8 +21,5 @@
   "devDependencies": {
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4"
-  },
-  "dependencies": {
-    "@zip.js/zip.js": "^2.7.47"
   }
 }
