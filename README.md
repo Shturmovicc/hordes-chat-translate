@@ -1,4 +1,4 @@
-# Hordes.io - Auto chat translator
+# Hordes.io - Auto Chat Translation Mod
 
 ![image](https://github.com/user-attachments/assets/bcbe26c2-5458-4829-beec-df98235b89d3)
 
@@ -8,7 +8,7 @@
 
 - Chat trasnlation to any language.
 - Switch between original and translated message
-- Nickname filter (Settings -> Chat/Context Menu in chat)
+- Nickname filter (Settings -> Chat or Context Menu in Chat)
 - Channel filter (Settings -> Chat)
 - Words exclude filter (Settings -> Chat)
 

@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        AutoChatTranslation
+// @name        Hordes.io - Auto Chat Translation Mod
 // @match       *://hordes.io/play
 // @grant       GM.xmlHttpRequest
 // @connect     translate.google.com
