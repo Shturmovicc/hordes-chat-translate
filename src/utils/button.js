@@ -10,7 +10,7 @@ class Button {
         this.disabled = disabled
         if (callback) this._callback = callback
 
-        this.node.addEventListener('click', event => {
+        this.node.addEventListener("click", (event) => {
             event.stopPropagation()
             if (!this.disabled && this._callback) this._callback.call(this, event)
         })
@@ -26,7 +26,7 @@ class Button {
 
     set disabled(bool) {
         this._disabled = bool
-        this.node.classList[bool ? 'add' : 'remove']('disabled')
+        this.node.classList[bool ? "add" : "remove"]("disabled")
     }
 
     get disabled() {
@@ -36,7 +36,7 @@ class Button {
 
 class ToggleButton extends Button {
     constructor(style, state = false, disabled = false, callback) {
-        super(style, disabled, event => {
+        super(style, disabled, (event) => {
             this.state = toggleBoolean(this.state)
             if (this.__callback) this.__callback.call(this, event, this.state)
         })
@@ -55,7 +55,7 @@ class ToggleButton extends Button {
 
     set state(bool) {
         this._state = bool
-        this.node.classList[this.state ? 'add' : 'remove']('active')
+        this.node.classList[this.state ? "add" : "remove"]("active")
     }
 
     get state() {
@@ -66,7 +66,7 @@ class ToggleButton extends Button {
 class TextButton extends Button {
     constructor(style, text, disabled = false, callback) {
         super(style, disabled, callback)
-        this.text = newElement('span').text(text)
+        this.text = newElement("span").text(text)
         this.node.append(this.text)
     }
 }
@@ -74,7 +74,7 @@ class TextButton extends Button {
 class ToggleTextButton extends ToggleButton {
     constructor(style, texts, state = false, disabled = false, callback) {
         super(style, state, disabled, callback)
-        this.text = newElement('span')
+        this.text = newElement("span")
         this.node.append(this.text)
 
         this.texts = texts
@@ -93,4 +93,3 @@ class ToggleTextButton extends ToggleButton {
 }
 
 export { Button, TextButton, ToggleButton, ToggleTextButton }
-

@@ -1,7 +1,7 @@
-import { Button } from "./utils/button";
+import { Button } from "./utils/button"
 
 function getContextMenu() {
-    return new ContextMenu(document.querySelector('.context'))
+    return new ContextMenu(document.querySelector(".context"))
 }
 
 class ContextMenu {
@@ -14,15 +14,14 @@ class ContextMenu {
     }
 
     addChoice(text, disabled, callback) {
-        const button = new Button('div', disabled, () => {
+        const button = new Button("div", disabled, () => {
             this.element.remove()
             if (callback) callback()
         })
         button.node.text(text)
-        button.node.css(['choice'], true)
+        button.node.css(["choice"], true)
         this.element.appendChild(button.node)
     }
 }
 
-export { getContextMenu };
-
+export { getContextMenu }

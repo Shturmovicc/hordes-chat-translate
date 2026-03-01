@@ -4,7 +4,8 @@
   "description": "Auto chat translation mod for hordes.io",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "biome format --write",
+    "lint": "biome lint --write",
     "build": "webpack && sh ./scripts/prepend-header.sh",
     "watch": "webpack watch"
   },
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/Shturmovicc/hordes-chat-translate#readme",
   "devDependencies": {
+    "@biomejs/biome": "2.4.4",
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4"
   }

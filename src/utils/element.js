@@ -3,7 +3,7 @@ export default function newElement(tag, options) {
 
     element.css = (classList, keep = false) => {
         if (keep === true) classList = [...classList, ...element.classList]
-        classList ? element.className = classList.join(" ") : element.className = null
+        element.className = classList ? classList.join(" ") : null
         return element
     }
 

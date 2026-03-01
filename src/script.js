@@ -8,52 +8,52 @@ const settings = new Settings()
 
 chat.onmessage = (message) => {
     message.oncontext = (menu) => {
-        const nameList = settings.get('excludeNames')
+        const nameList = settings.get("excludeNames")
         const name = menu.element.firstChild.textContent.toLowerCase()
 
         const exists = nameList.includes(name)
-        const text = exists ? 'Include' : 'Exclude'
+        const text = exists ? "Include" : "Exclude"
 
         menu.addChoice(`[TL] ${text}`, false, () => {
             if (!exists) nameList.push(name)
             else nameList.splice(nameList.indexOf(name), 1)
 
             settings.element.nicknameinput.value = nameList.join()
-            settings.element.nicknameinput.dispatchEvent(new FocusEvent('focusout'))
+            settings.element.nicknameinput.dispatchEvent(new FocusEvent("focusout"))
         })
     }
 
     if (!message.textNodes.length) return
-    if (settings.get('excludeNames').includes(message.nickname.toLowerCase())) return
-    if (settings.get('excludeChannels').includes(message.channel)) return
+    if (settings.get("excludeNames").includes(message.nickname.toLowerCase())) return
+    if (settings.get("excludeChannels").includes(message.channel)) return
 
-    message.translate(settings.get('language'), settings.get('excludeWords'))
+    message.translate(settings.get("language"), settings.get("excludeWords"))
 }
 
 settings.onset = (key, val) => {
-    if (key === 'enabled') val ? chat.init() : chat.disconnect()
+    if (key === "enabled") val ? chat.init() : chat.disconnect()
 }
 
 ui.onsettings = (swindow, node) => {
-    const choiceList = swindow.querySelector('.choice').parentNode
+    const choiceList = swindow.querySelector(".choice").parentNode
     Array.from(choiceList.children).forEach((child, index) => {
-        child.addEventListener('click', () => {
-            settings.element.node.forEach(element => {
+        child.addEventListener("click", () => {
+            settings.element.node.forEach((element) => {
                 index === 3 ? node.appendChild(element) : element.remove()
             })
         })
-        if (index === 3 && child.classList.contains('active')) {
+        if (index === 3 && child.classList.contains("active")) {
             child.click()
         }
     })
 }
 
 const observer = new MutationObserver((mutationList) => {
-    mutationList.forEach(mutation => {
-        mutation.addedNodes.forEach(node => {
-            if (node.matches('.layout')) {
+    mutationList.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+            if (node.matches(".layout")) {
                 ui.init()
-                if (settings.get('enabled')) chat.init()
+                if (settings.get("enabled")) chat.init()
                 return
             }
         })
@@ -61,14 +61,14 @@ const observer = new MutationObserver((mutationList) => {
 })
 
 const init = () => {
-    if (document.getElementById('chat')) {
+    if (document.getElementById("chat")) {
         settings.init()
         ui.init()
-        if (settings.get('enabled')) chat.init()
+        if (settings.get("enabled")) chat.init()
         observer.observe(document.body, { childList: true })
     } else {
         setTimeout(init, 100)
     }
 }
 
-window.addEventListener('load', init)
+window.addEventListener("load", init)

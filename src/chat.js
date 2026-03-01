@@ -18,26 +18,28 @@ class Message {
         this.channel = channel
         this.textNodes = textNodes
         this.elements = elements
-        this.elements.senderData?.addEventListener('contextmenu', () => this.oncontext(getContextMenu()))
+        this.elements.senderData?.addEventListener("contextmenu", () => this.oncontext(getContextMenu()))
     }
 
     async translate(language, excludeWords = []) {
         const translated = await translateAll(this.textNodes, language, excludeWords)
         if (translated.langs.length) {
-            translated.data.forEach(data => {
+            translated.data.forEach((data) => {
                 data.node.nodeValue = data.trans
             })
 
-            const prefix = new ToggleTextButton('span', ['orig: ', `${translated.langs.join("/")}: `], true)
-            prefix.node.styles({ 'cursor': 'pointer', 'pointer-events': 'all' })
-            prefix.callback = (event, state) => {
-                translated.data.forEach(data => { data.node.nodeValue = state ? data.trans : data.orig })
+            const prefix = new ToggleTextButton("span", ["orig: ", `${translated.langs.join("/")}: `], true)
+            prefix.node.styles({ cursor: "pointer", "pointer-events": "all" })
+            prefix.callback = (_, state) => {
+                translated.data.forEach((data) => {
+                    data.node.nodeValue = state ? data.trans : data.orig
+                })
             }
             this.elements.content.before(prefix.node)
         }
     }
 
-    oncontext(menu) { }
+    oncontext(_menu) {}
 
     static from_article(article) {
         const line = article.lastChild
@@ -49,10 +51,10 @@ class Message {
         const textNodes = []
         let senderName = ""
         switch (channelName) {
-            case 'faction':
-            case 'party':
-            case 'clan':
-            case 'from':
+            case "faction":
+            case "party":
+            case "clan":
+            case "from":
                 textNodes.push(...getTextNodes(content))
                 senderName = senderData.lastChild.textContent
         }
@@ -65,11 +67,10 @@ class Message {
             senderData,
             content,
             channel,
-            textNodes
+            textNodes,
         })
     }
 }
-
 
 export default class Chat {
     constructor() {
@@ -78,9 +79,11 @@ export default class Chat {
     }
 
     init() {
-        this.element = document.getElementById('chat')
+        this.element = document.getElementById("chat")
         this.observer.observe(this.element, { childList: true })
-        Array.from(this.element.children).forEach(node => this.onmessage(Message.from_article(node)))
+        Array.from(this.element.children).forEach((node) => {
+            this.onmessage(Message.from_article(node))
+        })
     }
 
     disconnect() {
@@ -88,12 +91,12 @@ export default class Chat {
     }
 
     onchange(mutationList) {
-        mutationList.forEach(mutation => {
-            mutation.addedNodes.forEach(node => {
+        mutationList.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
                 if (node.tagName) this.onmessage(Message.from_article(node))
             })
         })
     }
 
-    onmessage(message) { }
+    onmessage(_message) {}
 }
