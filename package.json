@@ -6,22 +6,23 @@
   "scripts": {
     "format": "biome format --write",
     "lint": "biome lint --write",
-    "build": "webpack && sh ./scripts/prepend-header.sh",
+    "build": "webpack --mode production",
     "watch": "webpack watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shturmovicc/hordes-chat-translate.git"
+    "url": "git+https://github.com/One-X-Hordes/hordes-chat-translate.git"
   },
   "author": "Shturmovic",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Shturmovicc/hordes-chat-translate/issues"
+    "url": "https://github.com/One-X-Hordes/hordes-chat-translate/issues"
   },
-  "homepage": "https://github.com/Shturmovicc/hordes-chat-translate#readme",
+  "homepage": "https://github.com/One-X-Hordes/hordes-chat-translate#readme",
   "devDependencies": {
     "@biomejs/biome": "2.4.4",
     "webpack": "^5.93.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-userscript": "^3.2.3"
   }
 }
