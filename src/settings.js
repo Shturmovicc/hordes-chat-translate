@@ -1,13 +1,20 @@
 import { ToggleButton } from "./utils/button"
 import { createDiv, newElement } from "./utils/element"
 
-const legacyStorageKeys = []
-const storageKey = "onex:translation-mode-settings"
+const legacyStorageKeys = ["onex:translation-mode-settings"]
+const storageKey = "onex:hordes-chat-translate"
 
-const migrations = {}
+const migrations = {
+    1: (data) => {
+        return {
+            ...data,
+            excludeLanguages: [],
+        }
+    },
+}
 
 export default class Settings {
-    #version = 0
+    #version = 1
 
     #defaults = {
         enabled: true,
@@ -15,6 +22,7 @@ export default class Settings {
         excludeNames: [],
         excludeChannels: [],
         excludeWords: [],
+        excludeLanguages: [],
     }
 
     constructor() {
@@ -160,6 +168,7 @@ class SettingsElement {
         this.nicknameInput = this._createArrayInput({ key: "excludeNames", placeholder: "Shturmovic, HorrorsOfWar, ..." })
         this.channelInput = this._createArrayInput({ key: "excludeChannels", placeholder: "party, clan, ..." })
         this.wordInput = this._createArrayInput({ key: "excludeWords", placeholder: "..." })
+        this.langExcludeInput = this._createArrayInput({ key: "excludeLanguages", placeholder: "fr, de, ..." })
 
         this.node = [
             createDiv().css(["textprimary"]).text("Translation"),
@@ -174,6 +183,8 @@ class SettingsElement {
             this.channelInput,
             this._createRowText("Exclude Words", "Ignore words"),
             this.wordInput,
+            this._createRowText("Exclude Languages", "Ignore languages, must be code"),
+            this.langExcludeInput,
         ]
     }
 }

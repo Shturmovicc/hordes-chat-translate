@@ -27,7 +27,7 @@ chat.onmessage = (message) => {
     if (settings.get("excludeNames").includes(message.nickname.toLowerCase())) return
     if (settings.get("excludeChannels").includes(message.channel)) return
 
-    message.translate(settings.get("language"), settings.get("excludeWords"))
+    message.translate(settings.get("language"), settings.get("excludeWords"), settings.get("excludeLanguages"))
 }
 
 settings.onset = (key, val) => {

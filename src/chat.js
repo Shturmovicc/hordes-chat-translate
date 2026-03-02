@@ -21,8 +21,8 @@ class Message {
         this.elements.senderData?.addEventListener("contextmenu", () => this.oncontext(getContextMenu()))
     }
 
-    async translate(language, excludeWords = []) {
-        const translated = await translateAll(this.textNodes, language, excludeWords)
+    async translate(language, excludeWords = [], excludeLanguages = []) {
+        const translated = await translateAll(this.textNodes, language, excludeWords, excludeLanguages)
         if (translated.langs.length) {
             translated.data.forEach((data) => {
                 data.node.nodeValue = data.trans
