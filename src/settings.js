@@ -1,8 +1,15 @@
 import { ToggleButton } from "./utils/button"
 import newElement from "./utils/element"
 
+const legacyStorageKeys = []
+const storageKey = "onex:translation-mode-settings"
+
+const migrations = {}
+
 export default class Settings {
-    #entries = {
+    #version = 0
+
+    #defaults = {
         enabled: true,
         language: "en",
         excludeNames: [],
@@ -12,29 +19,89 @@ export default class Settings {
 
     constructor() {
         this.element = new SettingsElement(this)
+        this.data = { ...this.#defaults }
+    }
+
+    _initData() {
+        this._migrateKeys()
+
+        let storedSettings = this._load()
+
+        if (!storedSettings) {
+            this._save(this.#defaults)
+            return
+        }
+
+        try {
+            const currentStoredVersion = storedSettings.version || 0
+
+            if (currentStoredVersion < this.#version) {
+                storedSettings = this._runMigrations(storedSettings, currentStoredVersion)
+            }
+
+            for (const key in storedSettings) {
+                if (typeof storedSettings[key] === typeof this.#defaults[key]) {
+                    this.data[key] = storedSettings[key]
+                }
+            }
+            this._save(this.data)
+        } catch (e) {
+            console.error("Settings recovery failed:", e)
+            this._save(this.#defaults)
+        }
+    }
+
+    _save(data) {
+        data.version = this.#version
+        localStorage.setItem(storageKey, JSON.stringify(data))
+    }
+
+    _load() {
+        return JSON.parse(localStorage.getItem(storageKey))
+    }
+
+    _migrateKeys() {
+        const data = localStorage.getItem(storageKey)
+        if (data) return
+
+        legacyStorageKeys.forEach((legacyKey) => {
+            const legacyData = localStorage.getItem(legacyKey)
+            if (legacyData) {
+                localStorage.setItem(storageKey, legacyData)
+                localStorage.removeItem(legacyKey)
+            }
+        })
+    }
+
+    _runMigrations(data, fromVersion) {
+        let upgradedData = { ...data }
+
+        for (let v = fromVersion + 1; v <= this.#version; v++) {
+            if (typeof migrations[v] === "function") {
+                upgradedData = migrations[v](upgradedData)
+            }
+            upgradedData.version = v
+        }
+
+        return upgradedData
     }
 
     init() {
-        const storage = JSON.parse(localStorage.getItem("onex:translation-mode-settings"))
-        for (const key in storage) {
-            if (typeof storage[key] === typeof this.#entries[key]) {
-                this.#entries[key] = storage[key]
-            }
-        }
+        this._initData()
         this.element.init()
     }
 
-    onset(_key, _val) {}
-
     set(key, val) {
-        this.#entries[key] = val
-        localStorage.setItem("onex:translation-mode-settings", JSON.stringify(this.#entries))
+        this.data[key] = val
+        this._save(this.data)
         this.onset(key, val)
     }
 
     get(key) {
-        return this.#entries[key]
+        return this.data[key]
     }
+
+    onset(_key, _val) {}
 }
 
 class SettingsElement {
