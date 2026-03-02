@@ -1,12 +1,12 @@
 import { getContextMenu } from "./context-menu"
-import translateAll from "./translate"
+import { translateAll } from "./translate"
 import { ToggleTextButton } from "./utils/button"
 
 function getTextNodes(element) {
     const textNodes = []
     for (const node of element.childNodes) {
         if (node.nodeType === Node.TEXT_NODE) {
-            textNodes.push({ node, text: node.nodeValue.trim() })
+            textNodes.push(node)
         }
     }
     return textNodes
@@ -32,7 +32,7 @@ class Message {
             prefix.node.styles({ cursor: "pointer", "pointer-events": "all" })
             prefix.callback = (_, state) => {
                 translated.data.forEach((data) => {
-                    data.node.nodeValue = state ? data.trans : data.orig
+                    data.node.nodeValue = state ? data.trans : data.source
                 })
             }
             this.elements.content.before(prefix.node)

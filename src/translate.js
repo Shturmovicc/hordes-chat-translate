@@ -1,83 +1,71 @@
 import Cache from "./utils/cache"
 
-const apiUrl = "https://translate.google.com/translate_a/single"
-const headers = {
-    "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
-}
+const cache = new Cache()
+
+const API_URL = "https://translate.google.com/translate_a/single"
 
 async function makeRequest(url) {
+    const options = { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+
+    // Use GM_xmlHttpRequest if available (for Userscripts), otherwise native fetch
     if (typeof GM !== "undefined") {
-        return await GM.xmlHttpRequest({
-            method: "GET",
-            url,
-            headers: headers,
-            responseType: "json",
-        }).then((res) => res.response)
-    } else {
-        return await fetch(url, { headers }).then((res) => res.json())
+        const res = await GM.xmlHttpRequest({ method: "GET", url, ...options, responseType: "json" })
+        return res.response
     }
+    return fetch(url, options).then((res) => res.json())
+}
+async function translate(text, targetLang) {
+    const cached = cache.get(targetLang, text)
+    if (cached) return cached
+
+    const url = `${API_URL}?client=gtx&dt=t&dt=rm&dj=1&sl=auto&tl=${targetLang}&q=${encodeURIComponent(text)}`
+    const content = await makeRequest(url)
+
+    cache.set(targetLang, text, content)
+    return content
 }
 
-async function translate(data, language = "en") {
-    const hit = cache.get(language, data.text)
-    if (hit) return { ...data, content: hit }
+async function translateAll(textNodes, targetLang, excludeWords = [], excludeLangs = []) {
+    const output = { langs: new Set(), data: [] }
+    const excludeSet = new Set(excludeWords.map((w) => w.toLowerCase()))
 
-    const url = new URL(apiUrl)
-    url.search = encodeURI(`client=gtx&dt=t&dt=rm&dj=1&sl=auto&tl=${language}&q=${data.text}`)
+    const tasks = textNodes.map(async (node) => {
+        const rawText = node.nodeValue.trim()
+        if (!rawText) return
 
-    const resp = await makeRequest(url)
-
-    cache.set(language, data.text, resp)
-    return { ...data, content: resp }
-}
-
-export default async function translateAll(textNodes, language, excludeWords = [], excludeLanguages = []) {
-    const tasks = []
-    const placeholders = []
-    for (const text of textNodes) {
-        if (text.text.length) {
-            text.text = text.text
-                .split(" ")
-                .map((word) => {
-                    for (const exclude of excludeWords) {
-                        if (word.toLowerCase() === exclude) {
-                            return `{{${placeholders.push(word)}}}`
-                        }
-                    }
-                    return word
-                })
-                .join(" ")
-            tasks.push(translate(text, language))
-        }
-    }
-    const translated = await Promise.all(tasks)
-
-    const languages = new Set()
-    const out = []
-    for (const data of translated) {
-        const sourceLanguage = data.content.src
-        const sourceText = data.text
-        const translatedText = data.content.sentences[0].trans
-        if (
-            sourceText.toLowerCase() !== translatedText.toLowerCase() &&
-            sourceLanguage !== language &&
-            !excludeLanguages.includes(sourceLanguage)
-        ) {
-            let trans = translatedText
-
-            placeholders.forEach((word, index) => {
-                const regex = RegExp(`\\{?\\{?\\{${index + 1}\\}\\}?\\}?`)
-                trans = trans.replace(regex, word)
+        // Replace excluded words with {{index}}
+        const placeholders = []
+        const processedText = rawText
+            .split(/\s+/)
+            .map((word) => {
+                if (excludeSet.has(word.toLowerCase())) {
+                    placeholders.push(word)
+                    return `{{${placeholders.length}}}`
+                }
+                return word
             })
+            .join(" ")
 
-            const orig = data.node.nodeValue
-            if (orig.toLowerCase() !== trans.toLowerCase()) {
-                out.push({ node: data.node, orig, trans })
-                languages.add(sourceLanguage)
-            }
+        const result = await translate(processedText, targetLang)
+        const { src: sourceLang, sentences } = result
+        let translatedText = sentences[0].trans
+
+        if (sourceLang === targetLang || excludeLangs.includes(sourceLang)) return
+
+        // Restore placeholders using a global regex to catch multiple occurrences
+        placeholders.forEach((word, i) => {
+            const regex = new RegExp(`\\{\\{\\s*${i + 1}\\s*\\}\\}`, "g")
+            translatedText = translatedText.replace(regex, word)
+        })
+
+        if (rawText.toLowerCase() !== translatedText.toLowerCase()) {
+            output.data.push({ node: node, source: node.nodeValue, trans: translatedText })
+            output.langs.add(sourceLang)
         }
-    }
-    return { langs: [...languages], data: out }
+    })
+
+    await Promise.all(tasks)
+    return { langs: [...output.langs], data: output.data }
 }
 
-const cache = new Cache()
+export { translateAll }
