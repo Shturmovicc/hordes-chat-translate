@@ -1,5 +1,5 @@
 import { ToggleButton } from "./utils/button"
-import newElement from "./utils/element"
+import { createDiv, newElement } from "./utils/element"
 
 const legacyStorageKeys = []
 const storageKey = "onex:translation-mode-settings"
@@ -104,78 +104,76 @@ export default class Settings {
     onset(_key, _val) {}
 }
 
+function parseInputValue(value) {
+    if (!value) return []
+    return value.split(",").map((name) => name.trim().toLowerCase())
+}
+
 class SettingsElement {
     constructor(settings) {
         this.settings = settings
     }
 
-    init() {
-        this.enabled = new ToggleButton("div", this.settings.get("enabled"))
-        this.enabled.node.css(["btn", "checkbox"], true)
-        this.enabled.callback = (_, state) => {
-            this.settings.set("enabled", state)
+    _createRowText(text, hint) {
+        const row = createDiv().text(text)
+        if (hint) {
+            row.append(newElement("br"), newElement("small").css(["textgrey"]).text(hint))
         }
+        return row
+    }
 
-        this.langinput = newElement("input", {
+    _createCheckbox(state, callback) {
+        const checkbox = new ToggleButton("div", state)
+        checkbox.node.css(["btn", "checkbox"], true)
+        checkbox.callback = callback
+        return checkbox
+    }
+
+    _createInput({ value, placeholder }, callback) {
+        const input = newElement("input", {
             type: "text",
-            value: this.settings.get("language"),
-            placeholder: "en",
+            value: value,
+            placeholder: placeholder,
         })
-        this.langinput.addEventListener("focusout", () => {
-            this.settings.set("language", this.langinput.value)
+        input.addEventListener("focusout", callback)
+        return input
+    }
+
+    _createValueInput({ key, placeholder }) {
+        return this._createInput({ value: this.settings.get(key), placeholder: placeholder }, (e) => {
+            this.settings.set(key, e.target.value)
+        })
+    }
+
+    _createArrayInput({ key, placeholder }) {
+        return this._createInput({ value: this.settings.get(key).join(", "), placeholder: placeholder }, (e) => {
+            this.settings.set(key, parseInputValue(e.target.value))
+        })
+    }
+
+    init() {
+        this.enabled = this._createCheckbox(this.settings.get("enabled"), (_, state) => {
+            this.settings.set("enabled", state)
         })
 
-        this.nicknameinput = newElement("input", {
-            type: "text",
-            value: this.settings.get("excludeNames").join(","),
-            placeholder: "Shturmovic, HorrorsOfWar...",
-        })
-        this.nicknameinput.addEventListener("focusout", () => {
-            const val = this.nicknameinput.value.split(",").map((name) => name.trim().toLowerCase())
-            this.settings.set("excludeNames", val)
-        })
-
-        this.channelinput = newElement("input", {
-            type: "text",
-            value: this.settings.get("excludeChannels").join(","),
-            placeholder: "Party, clan...",
-        })
-        this.channelinput.addEventListener("focusout", () => {
-            const val = this.channelinput.value.split(",").map((name) => name.trim().toLowerCase())
-            this.settings.set("excludeChannels", val)
-        })
-
-        this.wordinput = newElement("input", {
-            type: "text",
-            value: this.settings.get("excludeWords").join(","),
-            placeholder: "...",
-        })
-        this.wordinput.addEventListener("focusout", () => {
-            const val = this.wordinput.value.split(",").map((name) => name.trim().toLowerCase())
-            this.settings.set("excludeWords", val)
-        })
+        this.langInput = this._createValueInput({ key: "language", placeholder: "en" })
+        this.nicknameInput = this._createArrayInput({ key: "excludeNames", placeholder: "Shturmovic, HorrorsOfWar, ..." })
+        this.channelInput = this._createArrayInput({ key: "excludeChannels", placeholder: "party, clan, ..." })
+        this.wordInput = this._createArrayInput({ key: "excludeWords", placeholder: "..." })
 
         this.node = [
-            newElement("div").css(["textprimary"]).text("Translation"),
-            newElement("div"),
-            newElement("div").text("Enabled"),
+            createDiv().css(["textprimary"]).text("Translation"),
+            createDiv(),
+            this._createRowText("Enabled"),
             this.enabled.node,
-            newElement("div")
-                .text("Language Code")
-                .append(newElement("br"), newElement("small").css(["textgrey"]).text("Must be valid language code")),
-            this.langinput,
-            newElement("div")
-                .text("Exclude Names")
-                .append(newElement("br"), newElement("small").css(["textgrey"]).text("Nicknames to ignore")),
-            this.nicknameinput,
-            newElement("div")
-                .text("Exclude Channels")
-                .append(newElement("br"), newElement("small").css(["textgrey"]).text("Chat channels to ignore")),
-            this.channelinput,
-            newElement("div")
-                .text("Exclude Words")
-                .append(newElement("br"), newElement("small").css(["textgrey"]).text("Exclude words from translation")),
-            this.wordinput,
+            this._createRowText("Language", "Must be valid language code"),
+            this.langInput,
+            this._createRowText("Exclude Names", "Blacklist nicknames"),
+            this.nicknameInput,
+            this._createRowText("Exclude Channels", "Ignore chat channels"),
+            this.channelInput,
+            this._createRowText("Exclude Words", "Ignore words"),
+            this.wordInput,
         ]
     }
 }

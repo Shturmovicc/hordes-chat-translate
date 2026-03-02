@@ -1,4 +1,4 @@
-import newElement from "./element"
+import { newElement } from "./element"
 
 function toggleBoolean(boolean) {
     return !(boolean ?? false)

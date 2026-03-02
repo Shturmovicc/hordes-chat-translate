@@ -18,8 +18,8 @@ chat.onmessage = (message) => {
             if (!exists) nameList.push(name)
             else nameList.splice(nameList.indexOf(name), 1)
 
-            settings.element.nicknameinput.value = nameList.join()
-            settings.element.nicknameinput.dispatchEvent(new FocusEvent("focusout"))
+            settings.element.nicknameInput.value = nameList.join()
+            settings.element.nicknameInput.dispatchEvent(new FocusEvent("focusout"))
         })
     }
 

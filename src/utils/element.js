@@ -1,4 +1,4 @@
-export default function newElement(tag, options) {
+function newElement(tag, options) {
     const element = Object.assign(document.createElement(tag), options)
 
     element.css = (classList, keep = false) => {
@@ -26,3 +26,9 @@ export default function newElement(tag, options) {
 
     return element
 }
+
+function createDiv(options) {
+    return newElement("div", options)
+}
+
+export { createDiv, newElement }
