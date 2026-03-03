@@ -1,7 +1,7 @@
 {
   "name": "hordes-chat-translate",
   "version": "0.5.0a",
-  "description": "Auto chat translation mod for hordes.io",
+  "description": "Chat translation mod for hordes.io",
   "main": "script.js",
   "scripts": {
     "format": "biome format --write",

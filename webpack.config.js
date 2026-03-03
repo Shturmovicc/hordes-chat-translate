@@ -27,7 +27,7 @@ module.exports = [
         plugins: [
             new UserscriptPlugin({
                 headers: {
-                    name: "Hordes.io - Auto Chat Translation Mod",
+                    name: "Hordes.io - Chat Translation Mod",
                     match: "https://hordes.io/play",
                     grant: "GM.xmlHttpRequest",
                     connect: "translate.google.com",
