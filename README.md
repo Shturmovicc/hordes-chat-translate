@@ -6,16 +6,17 @@
 
 ## Features
 
-- Chat trasnlation to any language.
-- Switch between original and translated message
-- Nickname filter (Settings -> Chat or Context Menu in Chat)
-- Channel filter (Settings -> Chat)
-- Words exclude filter (Settings -> Chat)
+- Chat translation to any language.
+- Switch between original and translated message.
+- Nickname filter (`Settings -> Chat` or `Context Menu in Chat`)
+- Channel filter (`Settings -> Chat`)
+- Word filter (`Settings -> Chat`)
+- Language filter (`Settings -> Chat`)
 
 ## Installation
 
-1. Download [violentmonkey](https://violentmonkey.github.io/), [tampermonkey](https://www.tampermonkey.net/) or any other userscript manager.
-2. Download hordes-chat-translate.user.js from [releases](https://github.com/Shturmovicc/hordes-chat-translate/releases).
-3. Install it as userscript using manager.
+1. Download [violentmonkey](https://violentmonkey.github.io/) / [tampermonkey](https://www.tampermonkey.net/) or any other userscript manager.
+2. Download `hordes-chat-translate-vA.B.C.user.js` from [releases](https://github.com/Shturmovicc/hordes-chat-translate/releases).
+3. Install using userscript manager.
 
 Requires disabled CORS warnings if used without userscript manager.
